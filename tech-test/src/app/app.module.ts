@@ -5,24 +5,41 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { ListComponent } from './list/list.component';
-import { CallbackPipe } from './callback.pipe';
 import { HomeComponent } from './home/home.component';
+
+import { HttpService } from './services/http.service';
+import { ListResolver } from './resolves/list.resolver';
+
+import { MatTableModule } from '@angular/material/table';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ListComponent,
-    CallbackPipe,
-    HomeComponent
+    HomeComponent,
+    ListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    MatTableModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    MatInputModule,
+    MatIconModule,
+    MatListModule
   ],
-  providers: [HttpClient],
+  providers: [HttpClient, HttpService, ListResolver],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

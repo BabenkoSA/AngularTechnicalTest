@@ -1,8 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { formatDate } from '@angular/common';
+import { MatTableDataSource } from '@angular/material/table';
+import { HttpService } from '../services/http.service';
 
-interface Item { category: string, description: string, done: boolean | string, label: string, id?: number, isEdit?: boolean };
+interface DataItem { 
+  category: string, 
+  description: string, 
+  done: boolean | string, 
+  label: string, 
+  id?: number, 
+  isEdit?: boolean 
+};
+
+let ELEMENT_DATA: DataItem[] = [];
 
 @Component({
   selector: 'app-list',
@@ -11,76 +22,76 @@ interface Item { category: string, description: string, done: boolean | string, 
 })
 
 export class ListComponent implements OnInit {
-  items: Item[];
-  url: string = 'http://localhost:3000/tasks';
+  dataSource: MatTableDataSource<DataItem>;
   q: string = '';
+  displayedColumns: string[] = ['position', 'label', 'description', 'category', 'done', 'actions'];
   
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpService, private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    this.getList();
+    ELEMENT_DATA = this.route.snapshot.data.list;
+    this.updateTable();
   }
 
-  getList() {
-    this.http.get<Item[]>(this.url)
-            .subscribe(response => {
-                this.items = response;
-            },
-            error => {
-                console.log(error);
-            });
+  updateTable() {
+    this.dataSource = new MatTableDataSource(ELEMENT_DATA);
   }
 
   delete(id: number, index: number) {
-    if (id) {
-      this.http.delete(`${this.url}/${id}`)
-          .subscribe(response => {
-          },
-          error => {
-			        console.log(error);
-          });
+    if (id !== null) {
+      console.log('if', id);
+      
+      this.http.delete(id)
+        .subscribe(response => {},
+        error => {
+            console.log(error);
+        });
     }
-    this.items.splice(index, 1);
+    console.log('after if', id);
+    ELEMENT_DATA.splice(index, 1);
+    this.updateTable();
   }
 
   add() {
-    const newItem: Item = {
+    const newItem: DataItem = {
       category: "",
       description: "",
       done: false,
       label: "",
-      isEdit: true
+      isEdit: true,
+      id: null
     };
-    this.items.push(newItem);
+    ELEMENT_DATA.push(newItem);
+    this.updateTable();
   }
 
   patch(data: any, id: number) {
     delete data.isEdit;
-    this.http.patch(`${this.url}/${id}`, data)
+    this.http.patch(id, data)
         .subscribe(response => {
-                this.items.forEach(item => {
+                ELEMENT_DATA.forEach(item => {
                   if (item.id === id) {
                     item.isEdit = false;
                   }
-                })
+                });
             },
             error => {
                 console.log(error);
             });
   }
 
-  edit(data: Item) {
+  edit(data: DataItem) {
     data.isEdit = true;
   }
 
-  save(data: Item) {
-    if (!data.id) {
-      data.id = !this.items.length ? 1 : this.items[this.items.length - 1].id + 1;
+  save(data: DataItem) {
+    if (data.id === null) {
       delete data.isEdit;
-      this.http.post(this.url, data)
+      this.http.post(data)
         .subscribe(response => {
                 data.isEdit = false;
+                this.updateTable();
             },
             error => {
                 console.log(error);
@@ -95,6 +106,11 @@ export class ListComponent implements OnInit {
       return;
     }
     this.patch({ done: value ? formatDate(Date.now(),'dd-MM-yyyy', 'en-US') : false }, id);
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   
 }
