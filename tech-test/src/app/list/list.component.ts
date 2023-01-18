@@ -34,22 +34,16 @@ export class ListComponent implements OnInit {
     this.updateTable();
   }
 
-  updateTable() {
-    this.dataSource = new MatTableDataSource(ELEMENT_DATA);
-  }
-
-  delete(id: number, index: number) {
-    if (id !== null) {
-      console.log('if', id);
-      
-      this.http.delete(id)
+  delete(data: DataItem) {
+    let i = ELEMENT_DATA.findIndex(item => item === data);
+    if (data.id !== null) {
+      this.http.delete(data.id)
         .subscribe(response => {},
         error => {
             console.log(error);
         });
     }
-    console.log('after if', id);
-    ELEMENT_DATA.splice(index, 1);
+    ELEMENT_DATA.splice(i, 1);
     this.updateTable();
   }
 
@@ -67,7 +61,6 @@ export class ListComponent implements OnInit {
   }
 
   patch(data: any, id: number) {
-    delete data.isEdit;
     this.http.patch(id, data)
         .subscribe(response => {
                 ELEMENT_DATA.forEach(item => {
@@ -86,11 +79,13 @@ export class ListComponent implements OnInit {
   }
 
   save(data: DataItem) {
+    let i = ELEMENT_DATA.findIndex(item => item === data);
+    
     if (data.id === null) {
-      delete data.isEdit;
+      data.isEdit = false;
       this.http.post(data)
         .subscribe(response => {
-                data.isEdit = false;
+                ELEMENT_DATA[i] = response;
                 this.updateTable();
             },
             error => {
@@ -106,6 +101,29 @@ export class ListComponent implements OnInit {
       return;
     }
     this.patch({ done: value ? formatDate(Date.now(),'dd-MM-yyyy', 'en-US') : false }, id);
+  }
+
+  updateTable() {
+    this.dataSource = new MatTableDataSource(ELEMENT_DATA);
+    this.dataSource.filterPredicate = this.filterFunc;
+    
+    if (this.q) {
+      this.q = '';
+      this.dataSource.filter = this.q;
+    }
+  }
+
+  filterFunc(item: DataItem, searchValue: string): boolean {
+    if (searchValue) {
+      let q = searchValue.trim().toLowerCase()
+      if (item.category.trim().toLowerCase().includes(q) || item.label.trim().toLowerCase().includes(q) || item.description.trim().toLowerCase().includes(q)) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
   }
 
   applyFilter(event: Event) {

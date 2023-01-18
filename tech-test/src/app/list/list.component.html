@@ -1,7 +1,7 @@
 <div class="view-container">
   <mat-form-field>
     <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Filter by..." #input>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Filter by..." #input [(ngModel)]="q">
   </mat-form-field>
   
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">    
@@ -21,7 +21,7 @@
             <mat-icon>edit</mat-icon>
           </button>
 
-          <button mat-mini-fab color="warn" aria-label="Delete" (click)="delete(element.id, i)">
+          <button mat-mini-fab color="warn" aria-label="Delete" (click)="delete(element)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
