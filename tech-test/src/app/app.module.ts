@@ -1,9 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -39,7 +38,7 @@ import { MatListModule } from '@angular/material/list';
     MatIconModule,
     MatListModule
   ],
-  providers: [HttpClient, HttpService, ListResolver],
+  providers: [HttpService, ListResolver],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

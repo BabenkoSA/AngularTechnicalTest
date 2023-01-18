@@ -3,15 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { formatDate } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 import { HttpService } from '../services/http.service';
-
-interface DataItem { 
-  category: string, 
-  description: string, 
-  done: boolean | string, 
-  label: string, 
-  id?: number, 
-  isEdit?: boolean 
-};
+import { DataItem } from '../models/data.item';
 
 let ELEMENT_DATA: DataItem[] = [];
 
@@ -48,14 +40,7 @@ export class ListComponent implements OnInit {
   }
 
   add() {
-    const newItem: DataItem = {
-      category: "",
-      description: "",
-      done: false,
-      label: "",
-      isEdit: true,
-      id: null
-    };
+    const newItem: DataItem = new DataItem();
     ELEMENT_DATA.push(newItem);
     this.updateTable();
   }
@@ -116,7 +101,9 @@ export class ListComponent implements OnInit {
   filterFunc(item: DataItem, searchValue: string): boolean {
     if (searchValue) {
       let q = searchValue.trim().toLowerCase()
-      if (item.category.trim().toLowerCase().includes(q) || item.label.trim().toLowerCase().includes(q) || item.description.trim().toLowerCase().includes(q)) {
+      if (item.category.trim().toLowerCase().includes(q) 
+      || item.label.trim().toLowerCase().includes(q) 
+      || item.description.trim().toLowerCase().includes(q)) {
         return true;
       } else {
         return false;
@@ -130,5 +117,4 @@ export class ListComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-  
 }
