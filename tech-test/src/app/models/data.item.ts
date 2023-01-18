@@ -3,8 +3,8 @@ export class DataItem {
     description: string; 
     done: boolean | string; 
     label: string; 
-    id?: number; 
-    isEdit?: boolean; 
+    id: number; 
+    isEdit: boolean; 
     constructor(category: string = '', 
                 description: string = '', 
                 done: boolean | string = false, 
