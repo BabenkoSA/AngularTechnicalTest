@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { formatDate } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
-import { HttpService } from '../services/http.service';
-import { DataItem } from '../models/data.item';
+import { HttpService } from '../../services/http.service';
+import { DataItem } from '../../models/data.item';
 
 let ELEMENT_DATA: DataItem[] = [];
 

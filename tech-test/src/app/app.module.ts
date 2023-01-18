@@ -6,8 +6,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { ListComponent } from './list/list.component';
-import { HomeComponent } from './home/home.component';
+import { ListComponent } from './components/list/list.component';
+import { HomeComponent } from './components/home/home.component';
 
 import { HttpService } from './services/http.service';
 import { ListResolver } from './resolves/list.resolver';
