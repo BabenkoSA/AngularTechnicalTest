@@ -17,7 +17,7 @@ export class ListComponent implements OnInit {
   dataSource: MatTableDataSource<DataItem>;
   q: string = '';
   displayedColumns: string[] = ['position', 'label', 'description', 'category', 'done', 'actions'];
-  
+
   constructor(private http: HttpService, private route: ActivatedRoute) {
   }
 
@@ -30,10 +30,10 @@ export class ListComponent implements OnInit {
     let i = ELEMENT_DATA.findIndex(item => item === data);
     if (data.id !== null) {
       this.http.delete(data.id)
-        .subscribe(response => {},
-        error => {
+        .subscribe(response => { },
+          error => {
             console.log(error);
-        });
+          });
     }
     ELEMENT_DATA.splice(i, 1);
     this.updateTable();
@@ -47,16 +47,16 @@ export class ListComponent implements OnInit {
 
   patch(data: any, id: number) {
     this.http.patch(id, data)
-        .subscribe(response => {
-                ELEMENT_DATA.forEach(item => {
-                  if (item.id === id) {
-                    item.isEdit = false;
-                  }
-                });
-            },
-            error => {
-                console.log(error);
-            });
+      .subscribe(response => {
+        ELEMENT_DATA.forEach(item => {
+          if (item.id === id) {
+            item.isEdit = false;
+          }
+        });
+      },
+        error => {
+          console.log(error);
+        });
   }
 
   edit(data: DataItem) {
@@ -65,17 +65,17 @@ export class ListComponent implements OnInit {
 
   save(data: DataItem) {
     let i = ELEMENT_DATA.findIndex(item => item === data);
-    
+
     if (data.id === null) {
       data.isEdit = false;
       this.http.post(data)
         .subscribe(response => {
-                ELEMENT_DATA[i] = response;
-                this.updateTable();
-            },
-            error => {
-                console.log(error);
-            });
+          ELEMENT_DATA[i] = response;
+          this.updateTable();
+        },
+          error => {
+            console.log(error);
+          });
     } else {
       this.patch(data, data.id);
     }
@@ -85,13 +85,13 @@ export class ListComponent implements OnInit {
     if (!id) {
       return;
     }
-    this.patch({ done: value ? formatDate(Date.now(),'dd-MM-yyyy', 'en-US') : false }, id);
+    this.patch({ done: value ? formatDate(Date.now(), 'dd-MM-yyyy', 'en-US') : false }, id);
   }
 
   updateTable() {
     this.dataSource = new MatTableDataSource(ELEMENT_DATA);
     this.dataSource.filterPredicate = this.filterFunc;
-    
+
     if (this.q) {
       this.q = '';
       this.dataSource.filter = this.q;
@@ -101,9 +101,9 @@ export class ListComponent implements OnInit {
   filterFunc(item: DataItem, searchValue: string): boolean {
     if (searchValue) {
       let q = searchValue.trim().toLowerCase()
-      if (item.category.trim().toLowerCase().includes(q) 
-      || item.label.trim().toLowerCase().includes(q) 
-      || item.description.trim().toLowerCase().includes(q)) {
+      if (item.category.trim().toLowerCase().includes(q)
+        || item.label.trim().toLowerCase().includes(q)
+        || item.description.trim().toLowerCase().includes(q)) {
         return true;
       } else {
         return false;
